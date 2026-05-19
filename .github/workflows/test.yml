@@ -7,7 +7,7 @@ on:
     branches: [main]
 
 env:
-  POETRY_VERSION: "1.8.5"
+  POETRY_VERSION: "2.4.1"
   OPENAI_API_KEY: "sk-fake"
 
 jobs:
@@ -16,7 +16,6 @@ jobs:
     strategy:
       matrix:
         python-version:
-          - "3.11"
           - "3.12"
     steps:
       - uses: actions/checkout@v3

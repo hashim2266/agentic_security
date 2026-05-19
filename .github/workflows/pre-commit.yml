@@ -1,7 +1,7 @@
 name: Pre-Commit Checks
 
 env:
-  POETRY_VERSION: "1.8.5"
+  POETRY_VERSION: "2.4.1"
 
 
 on:
@@ -18,7 +18,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.11'
+          python-version: '3.12'
       - name: Install poetry
         run: pipx install poetry==$POETRY_VERSION
       - name: Install pre-commit
