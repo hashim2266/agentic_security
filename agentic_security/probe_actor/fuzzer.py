@@ -24,6 +24,9 @@ BUDGET_MULTIPLIER = settings_var("fuzzer.budget_multiplier", 100000000)
 INITIAL_OPTIMIZER_POINTS = settings_var("fuzzer.initial_optimizer_points", 25)
 MIN_FAILURE_SAMPLES = settings_var("fuzzer.min_failure_samples", 5)
 FAILURE_RATE_THRESHOLD = settings_var("fuzzer.failure_rate_threshold", 0.5)
+FAILURES_CSV_PATH = settings_var("fuzzer.failures_csv_path", "failures.csv")
+FULL_LOG_CSV_PATH = settings_var("fuzzer.full_log_csv_path", "full_scan_log.csv")
+MAX_INJECTION_ATTEMPTS = settings_var("fuzzer.max_injection_attempts", 20)
 
 
 async def generate_prompts(
@@ -422,8 +425,8 @@ async def perform_single_shot_scan(
         processed_prompts += module_size
 
     yield ScanResult.status_msg("Scan completed.")
-    fuzzer_state.export_failures("failures.csv")
-    fuzzer_state.export_full_log("full_scan_log.csv")
+    fuzzer_state.export_failures(FAILURES_CSV_PATH)
+    fuzzer_state.export_full_log(FULL_LOG_CSV_PATH)
 
 
 async def perform_many_shot_scan(
@@ -515,7 +518,7 @@ async def perform_many_shot_scan(
             tokens += prompt_tokens
 
             injected = False
-            for _ in range(20):
+            for _ in range(MAX_INJECTION_ATTEMPTS):
                 if injected:
                     break
 
@@ -558,8 +561,8 @@ async def perform_many_shot_scan(
                 break
 
     yield ScanResult.status_msg("Scan completed.")
-    fuzzer_state.export_failures("failures.csv")
-    fuzzer_state.export_full_log("full_scan_log.csv")
+    fuzzer_state.export_failures(FAILURES_CSV_PATH)
+    fuzzer_state.export_full_log(FULL_LOG_CSV_PATH)
 
 
 def scan_router(

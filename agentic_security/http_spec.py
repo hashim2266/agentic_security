@@ -107,12 +107,19 @@ class LLMSpec(BaseModel):
         content = content.replace("<<BASE64_IMAGE>>", encoded_image)
         content = content.replace("<<BASE64_AUDIO>>", encoded_audio)
 
+        # Remove Content-Length from headers to avoid mismatch when
+        # placeholder replacement changes body size. httpx will set
+        # the correct Content-Length based on the actual content.
+        clean_headers = {
+            k: v for k, v in self.headers.items() if k.lower() != "content-length"
+        }
+
         transport = httpx.AsyncHTTPTransport(retries=settings_var("network.retry", 3))
         async with httpx.AsyncClient(transport=transport) as client:
             response = await client.request(
                 method=self.method,
                 url=self.url,
-                headers=self.headers,
+                headers=clean_headers,
                 content=content,
                 timeout=self.timeout(),
             )
